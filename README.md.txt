@@ -1,0 +1,251 @@
+# GPT-2 Personal Assistant — Instruction Fine-Tuning & Evaluation
+
+A personal assistant built by fine-tuning a pretrained GPT-2 Medium language model (355M parameters) on instruction-response data.
+
+This project follows the concepts and implementation approach presented in Sebastian Raschka's *Build a Large Language Model (From Scratch)* and extends the workflow into an instruction-following personal assistant, followed by evaluation using Llama 3.2.
+
+---
+
+## Project Overview
+
+The goal of this project was to take a pretrained GPT-2 Medium model and adapt it for instruction-following behavior.
+
+The complete workflow includes:
+
+1. Loading pretrained GPT-2 Medium weights
+2. Preparing instruction-response data
+3. Creating training, validation, and test datasets
+4. Fine-tuning the language model on instruction data
+5. Generating responses from the fine-tuned model
+6. Saving the generated responses for evaluation
+7. Evaluating the generated responses using Llama 3.2
+
+The project demonstrates the complete pipeline from a pretrained language model to an instruction-following assistant.
+
+---
+
+## Model
+
+The project uses **GPT-2 Medium**, containing approximately **355 million parameters**.
+
+The model configuration used is:
+
+- Vocabulary size: 50,257
+- Context length: 1,024 tokens
+- Embedding dimension: 1,024
+- Transformer layers: 24
+- Attention heads: 16
+- Dropout: 0.0
+- QKV bias: enabled
+
+The pretrained GPT-2 weights are loaded before instruction fine-tuning.
+
+---
+
+## Instruction Fine-Tuning
+
+The model is fine-tuned on instruction-response examples.
+
+Each training example contains:
+
+- Instruction
+- Input
+- Expected Output
+
+The model learns to generate an appropriate response given the instruction and optional input.
+
+### Training Configuration
+
+- Optimizer: AdamW
+- Learning rate: `5e-5`
+- Weight decay: `0.1`
+- Epochs: `2`
+- Random seed: `123`
+
+Training and validation loss are monitored during fine-tuning.
+
+---
+
+## Response Generation
+
+After fine-tuning, the model is used to generate responses for previously unseen test instructions.
+
+The generation pipeline is:
+
+```text
+Instruction + Input
+        ↓
+Tokenization
+        ↓
+GPT-2
+        ↓
+Token Generation
+        ↓
+Detokenization
+        ↓
+Generated Response
+
+The generated responses are stored alongside the original test data.
+
+The resulting file is:
+
+instruction-data-with-response.json
+
+This allows the generated responses to be inspected and evaluated independently of the training process.
+
+Evaluation with Llama 3.2
+
+The generated responses are evaluated using Llama 3.2 through Ollama.
+
+The evaluation workflow provides the instruction, expected response, and generated response for comparison.
+
+This provides an additional qualitative evaluation step beyond simply monitoring training and validation loss.
+
+The evaluation notebook is:
+
+Evaluation_llama3.2.ipynb
+Repository Structure
+personal-assistant-gpt2/
+│
+├── personal_assistance.ipynb
+├── Evaluation_llama3.2.ipynb
+│
+├── instruction-data.json
+├── instruction-data-with-response.json
+│
+├── previous_chapters.py
+├── gpt_download.py
+│
+├── requirements.txt
+├── .gitignore
+└── README.md
+Main Files
+
+personal_assistance.ipynb
+
+The main notebook containing the workflow for loading GPT-2, preparing the instruction data, fine-tuning the model, generating responses, and saving the resulting model responses.
+
+Evaluation_llama3.2.ipynb
+
+Notebook containing the Llama 3.2 evaluation workflow.
+
+instruction-data.json
+
+Instruction-response dataset used for fine-tuning and evaluation.
+
+instruction-data-with-response.json
+
+Test data containing the model-generated responses.
+
+previous_chapters.py
+
+Supporting implementation used by the notebook for GPT-2 architecture, generation, loss calculation, and training utilities.
+
+gpt_download.py
+
+Utility used to download and load the pretrained GPT-2 weights.
+
+Installation
+
+Clone the repository:
+
+git clone <YOUR-GITHUB-REPOSITORY-URL>
+cd personal-assistant-gpt2
+
+Install the required Python packages:
+
+pip install -r requirements.txt
+
+The project was developed using Python, PyTorch, and Jupyter Notebook.
+
+Running the Project
+
+Open:
+
+personal_assistance.ipynb
+
+and run the notebook cells in order.
+
+The notebook will:
+
+Load the pretrained GPT-2 model
+Load and prepare the instruction dataset
+Create the training and validation data loaders
+Fine-tune the model
+Generate responses on test data
+Save generated responses to:
+instruction-data-with-response.json
+
+The evaluation workflow can then be explored using:
+
+Evaluation_llama3.2.ipynb
+Example
+Instruction
+Rewrite the sentence using a simile.
+Input
+The car is very fast.
+Expected Response
+The car is as fast as lightning.
+Model Response
+The car is as fast as a bullet.
+
+The generated responses were saved for further evaluation with Llama 3.2.
+
+Model Checkpoint
+
+The fine-tuned model checkpoint is not included directly in this repository because of its size.
+
+The checkpoint generated during training is:
+
+gpt2-medium355M-sft.pth
+
+The model can be generated by running the fine-tuning notebook.
+
+Technologies Used
+Python
+PyTorch
+NumPy
+Matplotlib
+tiktoken
+tqdm
+TensorFlow
+GPT-2
+Ollama
+Llama 3.2
+Jupyter Notebook
+Learning Objectives
+
+This project provided hands-on experience with:
+
+Transformer-based language models
+GPT-2 architecture
+Tokenization
+Embeddings
+Self-attention
+Instruction formatting
+Dataset and DataLoader construction
+Fine-tuning
+Cross-entropy loss
+AdamW optimization
+Autoregressive text generation
+Model checkpointing
+LLM-based evaluation
+Acknowledgements
+
+The implementation of the GPT-2 architecture and several supporting utilities are based on concepts and code from Sebastian Raschka's:
+
+Build a Large Language Model (From Scratch)
+
+Supporting files such as previous_chapters.py and gpt_download.py originate from the LLMs-from-scratch project and are included here because they are required by the notebook.
+
+This repository is intended as a learning project and extension of that work.
+
+Original project:
+
+https://github.com/rasbt/LLMs-from-scratch
+
+License
+
+This repository contains original work as well as supporting material derived from the LLMs-from-scratch project.
+
+Please refer to the original project's license for the applicable terms governing the reused supporting code.
